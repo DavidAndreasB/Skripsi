@@ -3,8 +3,9 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class DatabaseSeeder extends Seeder
 {
@@ -13,11 +14,17 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        // Hapus pengguna yang ada (opsional, jika ingin mengulang data)
+        // User::truncate(); 
+        
+        // Cek jika Super Admin belum ada untuk menghindari duplikasi
+        if (!User::where('name', 'superadmin')->exists()) {
+            User::create([
+                'name' => 'superadmin', // Username untuk login
+                'email' => null, // Dibuat NULL karena tidak digunakan
+                'password' => Hash::make('admin123'), // Ganti dengan password kuat
+                'role' => User::ROLE_SUPER_ADMIN, 
+            ]);
+        }
     }
 }

@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\UserController; 
 // Tambah controller lain
 use App\Http\Controllers\AktivitasController;
 use App\Http\Controllers\JobSheetController;
@@ -17,6 +18,11 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
+Route::middleware(['auth', 'admin'])->prefix('user')->name('user.')->group(function () {
+    Route::get('/', [UserController::class, 'index'])->name('index'); 
+    Route::get('/create', [UserController::class, 'create'])->name('create');
+    Route::post('/', [UserController::class, 'store'])->name('store'); 
+});
 
 Route::get('/dashboard', function () {
     return view('dashboard');
