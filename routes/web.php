@@ -9,6 +9,7 @@ use App\Http\Controllers\AktivitasController;
 use App\Http\Controllers\JobSheetController;
 use App\Http\Controllers\PengaturanController;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\spkController;
 
 Route::get('/', function () {
     if (Auth::check()) {
@@ -38,10 +39,20 @@ Route::middleware('auth')->group(function () {
    Route::get('/jobsheet', [JobSheetController::class, 'index'])->name('jobsheet.index');
     Route::get('/pengaturan', [PengaturanController::class, 'index'])->name('pengaturan.index');
 
+    Route::get('/spk', [spkController::class, 'index'])->name('spk.index');
+    Route::get('/spk/create', [spkController::class, 'create'])->name('spk.create');
+    Route::post('/spk', [spkController::class, 'store'])->name('spk.store');
     
+    // Rute untuk melihat Detail SPK
+    Route::get('/spk/{spk}', [spkController::class, 'show'])->name('spk.show');
+    
+    Route::get('/spk/{spk}/edit', [spkController::class, 'edit'])->name('spk.edit');
+    Route::put('/spk/{spk}', [spkController::class, 'update'])->name('spk.update');
+    Route::delete('/spk/{spk}', [spkController::class, 'destroy'])->name('spk.destroy');
+
 Route::resource('spk', \App\Http\Controllers\SPKController::class);
-    // --- AREA SUPER ADMIN ---
-    // Rute ini dilindungi oleh middleware 'admin'
+        // --- AREA SUPER ADMIN ---
+        // Rute ini dilindungi oleh middleware 'admin'
         Route::middleware(['admin'])->group(function () {
             
             // Menggunakan URL '/register' tapi diarahkan ke logika UserController Admin
@@ -50,6 +61,7 @@ Route::resource('spk', \App\Http\Controllers\SPKController::class);
             
             // Rute manajemen user lainnya
             Route::get('/user', [UserController::class, 'index'])->name('user.index');
+            
         });
 });
 

@@ -2,58 +2,122 @@
 
 @section('content')
 <div class="container-fluid">
+    <h1 class="h3 mb-4 text-gray-800">Tambah SPK Baru</h1>
 
-    <h1 class="h3 mb-4 text-gray-800">Tambah SPK</h1>
-
-    <div class="card shadow mb-4">
-        <div class="card-header py-3 bg-success text-white">
-            <h6 class="m-0 font-weight-bold">Form Tambah Data SPK</h6>
-        </div>
-        <div class="card-body">
-            <form action="{{ route('spk.store') }}" method="POST">
-                @csrf
-
+    <form action="{{ route('spk.store') }}" method="POST">
+        @csrf
+        
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 bg-primary text-white">
+                <h6 class="m-0 font-weight-bold">1. Header SPK (Informasi Proyek)</h6>
+            </div>
+            <div class="card-body">
                 <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label for="no" class="form-label fw-semibold">No SPK</label>
-                        <input type="text" name="no" id="no" class="form-control" placeholder="Contoh: VT.029.V.15.1" required>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>No SPK</label>
+                            <input type="text" name="no_spk" class="form-control" placeholder="Contoh: 001/SPK/2024" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Tanggal</label>
+                            <input type="date" name="tanggal" class="form-control" value="{{ date('Y-m-d') }}" required>
+                        </div>
                     </div>
-
-                    <div class="col-md-6 mb-3">
-                        <label for="nama_barang" class="form-label fw-semibold">Nama Barang</label>
-                        <input type="text" name="nama_barang" id="nama_barang" class="form-control" placeholder="Masukkan nama barang" required>
-                    </div>
-                </div>
-
-                <div class="mb-3">
-                    <label for="rincian" class="form-label fw-semibold">Rincian</label>
-                    <textarea name="rincian" id="rincian" rows="4" class="form-control" placeholder="Masukkan rincian pekerjaan" required></textarea>
-                    <small class="text-muted">Gunakan Shift + Enter untuk baris baru.</small>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label for="quantity" class="form-label fw-semibold">Quantity</label>
-                        <input type="number" name="quantity" id="quantity" class="form-control" placeholder="Masukkan jumlah" required>
-                    </div>
-
-                    <div class="col-md-6 mb-3">
-                        <label for="tanggal" class="form-label fw-semibold">Tanggal</label>
-                        <input type="date" name="tanggal" id="tanggal" class="form-control" required>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Nama Pemesan</label>
+                            <input type="text" name="nama_pemesan" class="form-control" placeholder="Nama Perusahaan / Klien" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Judul Proyek</label>
+                            <input type="text" name="judul_proyek" class="form-control" placeholder="Judul Pekerjaan" required>
+                        </div>
                     </div>
                 </div>
-
-                <div class="d-flex justify-content-end mt-4">
-                    <a href="{{ route('spk.index') }}" class="btn btn-secondary me-2">
-                        <i class="fas fa-arrow-left"></i> Batal
-                    </a>
-                    <button type="submit" class="btn btn-success">
-                        <i class="fas fa-save"></i> Simpan
-                    </button>
-                </div>
-            </form>
+            </div>
         </div>
-    </div>
 
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                <h6 class="m-0 font-weight-bold text-primary">2. Rincian Item Pekerjaan</h6>
+                <button type="button" class="btn btn-sm btn-success" id="add-row">
+                    <i class="fas fa-plus"></i> Tambah Baris
+                </button>
+            </div>
+            <div class="card-body p-0">
+                <table class="table table-striped mb-0">
+                    <thead class="bg-light text-center">
+                        <tr>
+                            <th width="25%">Nama Barang</th>
+                            <th width="50%">Rincian (Enter untuk menambah baris)</th>
+                            <th width="15%">Quantity</th>
+                            <th width="10%">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="items-table">
+                        {{-- Baris Pertama (Default) --}}
+                        <tr>
+                            <td class="align-top">
+                                <input type="text" name="items[0][nama_barang]" class="form-control" placeholder="Nama Item" required>
+                            </td>
+                            <td>
+                                {{-- PERUBAHAN DI SINI: Menggunakan TEXTAREA --}}
+                                <textarea name="items[0][rincian]" class="form-control" rows="3" placeholder="Masukkan Rincian" required></textarea>
+                            </td>
+                            <td class="align-top">
+                                <input type="number" name="items[0][quantity]" class="form-control text-center" placeholder="0" min="1" required>
+                            </td>
+                            <td class="align-top text-center">
+                                <button type="button" class="btn btn-danger btn-sm remove-row" disabled><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="mb-5">
+            <button type="submit" class="btn btn-primary btn-lg btn-block shadow-sm">
+                <i class="fas fa-save fa-sm text-white-50"></i> Simpan Data SPK
+            </button>
+        </div>
+    </form>
 </div>
+
+{{-- JAVASCRIPT UNTUK MENAMBAH BARIS DINAMIS --}}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        let rowIdx = 1;
+        
+        // Fungsi Tambah Baris
+        document.getElementById('add-row').addEventListener('click', function () {
+            let html = `
+                <tr>
+                    <td class="align-top">
+                        <input type="text" name="items[${rowIdx}][nama_barang]" class="form-control" placeholder="Nama Item" required>
+                    </td>
+                    <td>
+                        {{-- TEXTAREA JUGA DITERAPKAN DI BARIS BARU --}}
+                        <textarea name="items[${rowIdx}][rincian]" class="form-control" rows="3" placeholder="- Rincian 1&#10;- Rincian 2" required></textarea>
+                    </td>
+                    <td class="align-top">
+                        <input type="number" name="items[${rowIdx}][quantity]" class="form-control text-center" placeholder="0" min="1" required>
+                    </td>
+                    <td class="align-top text-center">
+                        <button type="button" class="btn btn-danger btn-sm remove-row"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>
+            `;
+            document.getElementById('items-table').insertAdjacentHTML('beforeend', html);
+            rowIdx++;
+        });
+
+        // Fungsi Hapus Baris
+        document.getElementById('items-table').addEventListener('click', function (e) {
+            if (e.target.closest('.remove-row')) {
+                e.target.closest('tr').remove();
+            }
+        });
+    });
+</script>
 @endsection

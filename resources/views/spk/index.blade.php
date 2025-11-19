@@ -3,54 +3,89 @@
 @section('content')
 <div class="container-fluid">
 
-    <h1 class="h3 mb-2 text-gray-800">Tabel SPK</h1>
-    <p class="mb-4">Berikut daftar seluruh Surat Perintah Kerja (SPK) yang telah tercatat di sistem.</p>
+    <h1 class="h3 mb-2 text-gray-800">Daftar SPK</h1>
+    <p class="mb-4">Manajemen data Surat Perintah Kerja (SPK) Proyek.</p>
 
     <div class="card shadow mb-4">
         <div class="card-header py-3 d-flex justify-content-between align-items-center">
             <h6 class="m-0 font-weight-bold text-primary">Data SPK</h6>
+            
+            {{-- Tombol Tambah (Hanya Admin) --}}
+            @if(auth()->user()->isSuperAdmin())
             <a href="{{ route('spk.create') }}" class="btn btn-success btn-sm shadow-sm">
-                <i class="fas fa-plus fa-sm text-white-50"></i> Tambah SPK
+                <i class="fas fa-plus fa-sm text-white-50"></i> Buat SPK Baru
             </a>
+            @endif
         </div>
 
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
                     <thead class="bg-light">
                         <tr>
-                            <th>No</th>
-                            <th>Nama Barang</th>
-                            <th>Rincian</th>
-                            <th>Quantity</th>
+                            <th width="5%">No</th>
+                            <th>No SPK</th>
+                            <th>Nama Pemesan</th>
+                            <th>Judul Proyek</th>
+                            <th>Jumlah Barang</th>
                             <th>Tanggal</th>
-                            <th style="width: 120px;">Aksi</th>
+                            <th>Status</th>
+                            <th width="15%">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse ($spk as $item)
                             <tr>
-                                <td>{{ $item->no }}</td>
-                                <td>{{ $item->nama_barang }}</td>
-                                <td>{!! nl2br(e($item->rincian)) !!}</td>
-                                <td>{{ $item->quantity }}</td>
-                                <td>{{ \Carbon\Carbon::parse($item->tanggal)->format('d/m/Y') }}</td>
+                                <td>{{ $loop->iteration }}</td>
+                                <td class="font-weight-bold">{{ $item->no_spk }}</td>
+                                <td>{{ $item->nama_pemesan }}</td>
+                                <td>{{ $item->judul_proyek }}</td>
                                 <td class="text-center">
-                                    <a href="{{ route('spk.edit', $item->id) }}" class="btn btn-primary btn-sm">
-                                        <i class="fas fa-edit"></i>
+                                    {{-- Menghitung jumlah baris item di SPK ini --}}
+                                    <span class="badge badge-info">{{ $item->items->count() }} Item</span>
+                                </td>
+                                <td>{{ \Carbon\Carbon::parse($item->tanggal)->format('d M Y') }}</td>
+                                <td>
+                                    @if($item->status == 'Diproses')
+                                        <span class="badge badge-warning">Diproses</span>
+                                    @elseif($item->status == 'Selesai')
+                                        <span class="badge badge-success">Selesai</span>
+                                    @else
+                                        <span class="badge badge-secondary">Draft</span>
+                                    @endif
+                                </td>
+                                <td class="text-center">
+                                    {{-- 
+                                        PERUBAHAN DISINI:
+                                        Dulu: button data-toggle="modal" ...
+                                        Sekarang: a href="{{ route('spk.show', ...) }}"
+                                        Ini akan membawa user pindah halaman ke tampilan surat penuh.
+                                    --}}
+                                    <a href="{{ route('spk.show', $item->id) }}" class="btn btn-info btn-sm" title="Lihat Detail Surat">
+                                        <i class="fas fa-eye"></i> Detail
                                     </a>
-                                    <form action="{{ route('spk.destroy', $item->id) }}" method="POST" class="d-inline">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Yakin ingin menghapus data ini?')">
-                                            <i class="fas fa-trash-alt"></i>
-                                        </button>
-                                    </form>
+
+                                    {{-- Tombol Edit/Hapus (Hanya Admin) --}}
+                                    @if(auth()->user()->isSuperAdmin())
+                                        <a href="{{ route('spk.edit', $item->id) }}" class="btn btn-warning btn-sm" title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <form action="{{ route('spk.destroy', $item->id) }}" method="POST" class="d-inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Yakin ingin menghapus SPK ini? Seluruh item di dalamnya juga akan terhapus.')" title="Hapus">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                        </form>
+                                    @endif
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="text-center text-muted py-4">Belum ada data SPK.</td>
+                                <td colspan="8" class="text-center text-muted py-5">
+                                    <i class="fas fa-folder-open fa-3x mb-3"></i><br>
+                                    Belum ada data SPK. 
+                                </td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -61,3 +96,11 @@
 
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    $(document).ready(function() {
+        $('#dataTable').DataTable();
+    });
+</script>
+@endpush
