@@ -19,7 +19,6 @@ class EnsureUserIsAdmin
     {
         // 1. Cek apakah user sudah login
         if (! $request->user()) {
-            // Asumsi rute login Anda bernama 'login'
             return redirect()->route('login'); 
         }
 

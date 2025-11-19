@@ -19,9 +19,10 @@ Route::get('/', function () {
 });
 
 Route::middleware(['auth', 'admin'])->prefix('user')->name('user.')->group(function () {
-    Route::get('/', [UserController::class, 'index'])->name('index'); 
-    Route::get('/create', [UserController::class, 'create'])->name('create');
+    // URL yang benar untuk membuat akun baru
+    Route::get('/create', [UserController::class, 'create'])->name('create'); 
     Route::post('/', [UserController::class, 'store'])->name('store'); 
+    Route::get('/', [UserController::class, 'index'])->name('index'); 
 });
 
 Route::get('/dashboard', function () {

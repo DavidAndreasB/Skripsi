@@ -15,11 +15,10 @@
             @csrf
 
             <!-- Username -->
-            <div class="mb-4">
-                <label for="username" class="block text-gray-700">Username</label>
-                <input id="username" type="text" name="username"
-                       value="{{ old('username') }}" required autofocus
-                       class="w-full border-gray-300 rounded-lg shadow-sm focus:ring focus:ring-indigo-200 p-2" />
+            <div>
+            <x-input-label for="username" :value="__('Username')" />
+            <x-text-input id="username" class="block mt-1 w-full" type="text" name="username" :value="old('username')" required autofocus />
+            <x-input-error :messages="$errors->get('username')" class="mt-2" />
             </div>
 
             <!-- Password -->
