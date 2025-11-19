@@ -1,12 +1,10 @@
-@extends('layouts.app')
+@extends('layouts.sbadmin')
 
 @section('content')
 <div class="container-fluid">
 
-    <!-- Judul Halaman -->
     <h1 class="h3 mb-4 text-gray-800">Edit SPK</h1>
 
-    <!-- Card Form Edit -->
     <div class="card shadow mb-4">
         <div class="card-header py-3 bg-primary text-white">
             <h6 class="m-0 font-weight-bold">Form Edit Data SPK</h6>

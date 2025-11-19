@@ -1,13 +1,11 @@
-@extends('layouts.app')
+@extends('layouts.sbadmin')
 
 @section('content')
 <div class="container-fluid">
 
-    <!-- Judul Halaman -->
     <h1 class="h3 mb-2 text-gray-800">Tabel SPK</h1>
     <p class="mb-4">Berikut daftar seluruh Surat Perintah Kerja (SPK) yang telah tercatat di sistem.</p>
 
-    <!-- Card Data SPK -->
     <div class="card shadow mb-4">
         <div class="card-header py-3 d-flex justify-content-between align-items-center">
             <h6 class="m-0 font-weight-bold text-primary">Data SPK</h6>
@@ -63,24 +61,3 @@
 
 </div>
 @endsection
-
-@push('scripts')
-<!-- Script untuk DataTables -->
-<script>
-    $(document).ready(function() {
-        $('#dataTable').DataTable({
-            "language": {
-                "lengthMenu": "Tampilkan _MENU_ entri",
-                "zeroRecords": "Tidak ada data ditemukan",
-                "info": "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
-                "infoEmpty": "Tidak ada data tersedia",
-                "search": "Cari:",
-                "paginate": {
-                    "next": "Berikutnya",
-                    "previous": "Sebelumnya"
-                }
-            }
-        });
-    });
-</script>
-@endpush

@@ -1,21 +1,25 @@
-@extends('layouts.app')
+@extends('layouts.sbadmin')
 
 @section('content')
+<div class="container-fluid">
 
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            Jobsheet
-        </h2>
-    </x-slot>
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Jobsheet</h1>
+    </div>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
-                    Ini halaman Jobsheet.
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Daftar Jobsheet</h6>
+                </div>
+                <div class="card-body">
+                    <p>Ini halaman Jobsheet. Anda dapat menambahkan tabel atau konten jobsheet di sini.</p>
+                    {{-- Masukkan Tabel Jobsheet Anda di sini nanti --}}
                 </div>
             </div>
         </div>
     </div>
+
+</div>
 @endsection
- 

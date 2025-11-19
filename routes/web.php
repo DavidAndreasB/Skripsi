@@ -8,7 +8,6 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\AktivitasController;
 use App\Http\Controllers\JobSheetController;
 use App\Http\Controllers\PengaturanController;
-
 use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
@@ -41,8 +40,17 @@ Route::middleware('auth')->group(function () {
 
     
 Route::resource('spk', \App\Http\Controllers\SPKController::class);
-
-
+    // --- AREA SUPER ADMIN ---
+    // Rute ini dilindungi oleh middleware 'admin'
+        Route::middleware(['admin'])->group(function () {
+            
+            // Menggunakan URL '/register' tapi diarahkan ke logika UserController Admin
+            Route::get('/register', [UserController::class, 'create'])->name('register'); 
+            Route::post('/register', [UserController::class, 'store'])->name('register.store');
+            
+            // Rute manajemen user lainnya
+            Route::get('/user', [UserController::class, 'index'])->name('user.index');
+        });
 });
 
 

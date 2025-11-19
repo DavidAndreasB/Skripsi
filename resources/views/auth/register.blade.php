@@ -1,50 +1,75 @@
-<x-guest-layout>
-    <div class="max-w-md mx-auto mt-10 bg-white p-6 rounded-lg shadow-lg">
+@extends('layouts.sbadmin')
 
-        @if ($errors->any())
-            <div class="bg-red-100 text-red-700 p-3 rounded mb-4">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
+@section('content')
+<div class="container-fluid">
+    <h1 class="h3 mb-4 text-gray-800">Registrasi Akun Baru</h1>
+
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Data Pengguna</h6>
+                </div>
+                <div class="card-body">
+                    {{-- Perhatikan route-nya: kita arahkan ke register.store yang kita buat di routes/web.php --}}
+                    <form method="POST" action="{{ route('register.store') }}">
+                        @csrf
+
+                        {{-- Username --}}
+                        <div class="form-group">
+                            <label for="username">Username</label>
+                            <input id="username" type="text" class="form-control @error('username') is-invalid @enderror" 
+                                   name="username" value="{{ old('username') }}" required autofocus>
+                            @error('username')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
+
+                        {{-- Role Dropdown (Ini yang tidak ada di register bawaan) --}}
+                        <div class="form-group">
+                            <label for="role">Peran (Role)</label>
+                            <select id="role" class="form-control @error('role') is-invalid @enderror" name="role" required>
+                                <option value="" disabled selected>-- Pilih Peran --</option>
+                                {{-- Kita ambil data $roles dari Controller --}}
+                                @foreach($roles as $val => $label)
+                                    <option value="{{ $val }}">{{ $label }}</option>
+                                @endforeach
+                            </select>
+                            @error('role')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
+
+                        {{-- Password --}}
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" 
+                                   name="password" required autocomplete="new-password">
+                            @error('password')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
+
+                        {{-- Confirm Password --}}
+                        <div class="form-group">
+                            <label for="password_confirmation">Konfirmasi Password</label>
+                            <input id="password_confirmation" type="password" class="form-control" 
+                                   name="password_confirmation" required>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-block">
+                            Daftarkan Akun
+                        </button>
+                    </form>
+                </div>
             </div>
-        @endif
-
-        <form method="POST" action="{{ route('register') }}">
-            @csrf
-
-            <!-- Username -->
-            <div class="mb-4">
-                <label for="username" class="block text-gray-700">Username</label>
-                <input id="username" type="text" name="username" value="{{ old('username') }}" required autofocus
-                       class="w-full border-gray-300 rounded-lg shadow-sm focus:ring focus:ring-indigo-200 p-2" />
-            </div>
-
-            <!-- Password -->
-            <div class="mb-4">
-                <label for="password" class="block text-gray-700">Password</label>
-                <input id="password" type="password" name="password" required
-                       class="w-full border-gray-300 rounded-lg shadow-sm focus:ring focus:ring-indigo-200 p-2" />
-            </div>
-
-            <!-- Konfirmasi Password -->
-            <div class="mb-4">
-                <label for="password_confirmation" class="block text-gray-700">Konfirmasi Password</label>
-                <input id="password_confirmation" type="password" name="password_confirmation" required
-                       class="w-full border-gray-300 rounded-lg shadow-sm focus:ring focus:ring-indigo-200 p-2" />
-            </div>
-
-            <div class="flex justify-between items-center">
-                <a href="{{ route('login') }}" class="text-sm text-indigo-600 hover:underline">
-                    Sudah punya akun? Login di sini
-                </a>
-
-            <div class="flex items-center justify-end mt-4">
-                <x-primary-button class="ms-3">
-                    {{ __('register') }}
-                </x-primary-button>
-            </div>
-        </form>
+        </div>
     </div>
-</x-guest-layout>
+</div>
+@endsection

@@ -30,25 +30,24 @@ class UserController extends Controller
             User::ROLE_QUALITY_CONTROL => '2. Quality Control (QC)',
             User::ROLE_OPERATOR => '3. Operator',
         ];
-        return view('user.create', compact('roles'));
+        return view('auth.register', compact('roles'));
     }
     
     // Menyimpan data pengguna baru
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => ['required', 'string', 'max:255', 'unique:'.User::class], 
+       $request->validate([
+            'username' => ['required', 'string', 'max:255', 'unique:'.User::class], 
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'role' => ['required', 'integer', Rule::in([User::ROLE_SUPER_ADMIN, User::ROLE_QUALITY_CONTROL, User::ROLE_OPERATOR])],
         ]);
 
         User::create([
-            'name' => $request->name,
-            'email' => null, // TIDAK MENGGUNAKAN EMAIL
+            'username' => $request->username, // PENTING: ini harus username
             'password' => Hash::make($request->password),
-            'role' => (int) $request->role, 
+            'role' => (int) $request->role,
+            // 'email' tidak perlu diisi jika nullable
         ]);
-
-        return Redirect::route('user.index')->with('status', 'Akun pengguna **' . $request->name . '** berhasil didaftarkan.');
+        return Redirect::route('user.index')->with('status', 'Akun pengguna ' . $request->username . ' berhasil didaftarkan.');
     }
 }
