@@ -2,20 +2,21 @@
 
 @section('content')
 <div class="container-fluid">
-    <h1 class="h3 mb-4 text-gray-800">Edit SPK</h1>
+
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Edit SPK</h1>
+        <a href="{{ route('spk.index') }}" class="btn btn-secondary btn-sm shadow-sm">
+            <i class="fas fa-arrow-left fa-sm text-white-50"></i> Kembali
+        </a>
+    </div>
 
     <form action="{{ route('spk.update', $spk->id) }}" method="POST">
         @csrf
         @method('PUT')
-        {{-- TOMBOL KEMBALI (POSISI ATAS) --}}
-        <div>
-            <a href="{{ route('spk.index') }}" class="btn btn-secondary btn-sm shadow-sm">
-                <i class="fas fa-arrow-left fa-sm text-white-50"></i> Kembali
-            </a>
-        </div>
+        
         <div class="card shadow mb-4">
             <div class="card-header py-3 bg-warning text-white">
-                <h6 class="m-0 font-weight-bold">1. Edit Header SPK</h6>
+                <h6 class="m-0 font-weight-bold">1. Edit Informasi Proyek (Header)</h6>
             </div>
             <div class="card-body">
                 <div class="row">
@@ -86,7 +87,6 @@
                                 <input type="number" name="items[{{ $index }}][quantity]" class="form-control text-center" value="{{ $item->quantity }}" min="1" required>
                             </td>
                             <td class="align-top text-center">
-                                {{-- Tombol hapus hanya aktif jika baris lebih dari 1 (diatur JS) --}}
                                 <button type="button" class="btn btn-danger btn-sm remove-row"><i class="fas fa-trash"></i></button>
                             </td>
                         </tr>
@@ -107,7 +107,7 @@
 {{-- JAVASCRIPT UNTUK MENAMBAH BARIS DINAMIS --}}
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // Hitung jumlah baris awal dari data yang ada
+        // Hitung jumlah baris awal agar index array tidak bentrok
         let rowIdx = {{ count($spk->items) }};
         
         // Fungsi Tambah Baris
@@ -135,7 +135,7 @@
         // Fungsi Hapus Baris
         document.getElementById('items-table').addEventListener('click', function (e) {
             if (e.target.closest('.remove-row')) {
-                // Cek sisa baris agar tidak habis total
+                // Cek sisa baris agar tidak habis total (Opsional)
                 if (document.querySelectorAll('.item-row').length > 1) {
                     e.target.closest('tr').remove();
                 } else {

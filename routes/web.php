@@ -9,7 +9,10 @@ use App\Http\Controllers\SpkController;         // S BESAR
 use App\Http\Controllers\JobSheetController;    // J S BESAR
 
 Route::get('/', function () {
-    return Auth::check() ? redirect()->route('dashboard') : view('welcome');
+    if (Auth::check()) {
+        return redirect()->route('dashboard');
+    }
+    return redirect()->route('login');
 });
 
 Route::get('/dashboard', function () {
@@ -26,10 +29,12 @@ Route::middleware('auth')->group(function () {
     // --- SPK ---
     Route::resource('spk', SpkController::class);
 
-    // --- JOBSHEET ---
+    // --- JOBSHEET ROUTES ---
     Route::get('/jobsheet', [JobSheetController::class, 'index'])->name('jobsheet.index');
     Route::get('/jobsheet/{spk_id}', [JobSheetController::class, 'show'])->name('jobsheet.show');
     Route::post('/jobsheet', [JobSheetController::class, 'store'])->name('jobsheet.store');
+    
+    // PERHATIKAN BAGIAN '/{id}' DI BAWAH INI. JANGAN SAMPAI HILANG!
     Route::delete('/jobsheet/{id}', [JobSheetController::class, 'destroy'])->name('jobsheet.destroy');
 
     // --- ADMIN ---
